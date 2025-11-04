@@ -153,24 +153,8 @@ size_t hash_iterar(hash_t *hash, bool (*f)(char *, void *, void *), void *ctx){
 
     return aplicadas;
 }
-void hash_destruir(hash_t *hash){
-    if(!hash) return;
-    
-    for(size_t i = 0; i < hash->capacidad; i++){
-        hash_nodo_t *actual = hash->buckets[i];
-        while(actual){
-            hash_nodo_t *siguiente = actual->siguiente;
-            free(actual->clave);
-            free(actual);
-            actual = siguiente;
-        }
-    }
-    
-    free(hash->buckets);
-    free(hash);
-}
 
-void hash_destruir_todo(hash_t *hash, void (*destructor)(void *)){
+static void hash_destruir_interno(hash_t *hash, void (*destructor)(void *)){
     if(!hash) return;
     
     for(size_t i = 0; i < hash->capacidad; i++){
@@ -187,4 +171,12 @@ void hash_destruir_todo(hash_t *hash, void (*destructor)(void *)){
     
     free(hash->buckets);
     free(hash);
+}
+
+void hash_destruir(hash_t *hash){
+    hash_destruir_interno(hash, NULL);
+}
+
+void hash_destruir_todo(hash_t *hash, void (*destructor)(void *)){
+    hash_destruir_interno(hash, destructor);
 }
