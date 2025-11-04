@@ -1,5 +1,7 @@
+#define _POSIX_C_SOURCE 200809L
 #include "hash.h"
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct hash_nodo {
     char *clave;
@@ -12,6 +14,9 @@ struct hash {
     size_t capacidad;
     size_t cantidad;
 };
+
+typedef bool (*hash_nodo_comparador)(hash_nodo_t *, void *);
+
 
 
 hash_t *hash_crear(size_t capacidad_inicial){
@@ -50,41 +55,36 @@ static size_t funcion_hashing(const char *str, size_t capacidad) {
     return hash % capacidad;
 }
 
-/**
- *
- * Inserta un elemento asociado a la clave en la tabla de hash.
- *
- * Si la clave ya existe en la tabla, modificamos el valor y ponemos el nuevo.
- * Si encontrado no es NULL, se almacena el elemento reemplazado en el mismo.
- *
- * Esta funcion almacena una copia de la clave.
- *
- * No se admiten claves nulas.
- *
- * Devuelve true si se pudo almacenar el valor.
- **/
-bool hash_insertar(hash_t *hash, char *clave, void *valor, void **encontrado){
-    if(!hash || !clave) return NULL;
 
-    size_t valor_hashing = funcion_hashing(clave, hash->capacidad);
-    hash_nodo_t *actual = hash->buckets[valor_hashing];
-
-    while(actual){
-        if(strcmp(actual->clave , clave)== 0){
-            if(encontrado) *encontrado = actual->valor;
-            actual->valor = valor;
-        }
+static hash_nodo_t *hash_buscar_nodo(hash_t *hash, const char *clave, size_t *pos_hash) {
+    if (!hash || !clave) return NULL;
+    size_t i = funcion_hashing(clave, hash->capacidad);
+    if (pos_hash) *pos_hash = i;
+    hash_nodo_t *actual = hash->buckets[i];
+    while (actual) {
+        if (strcmp(actual->clave, clave) == 0)
+            return actual;
         actual = actual->siguiente;
+    }
+    return NULL;
+}
+
+bool hash_insertar(hash_t *hash, char *clave, void *valor, void **encontrado){
+    if(!hash || !clave) return false;
+    
+    size_t valor_hashing;
+    hash_nodo_t *actual = hash_buscar_nodo(hash, clave, &valor_hashing);
+    if (actual) {
+        if (encontrado) *encontrado = actual->valor;
+        actual->valor = valor;
+        return true;
     }
 
     hash_nodo_t *nuevo = malloc(sizeof(hash_nodo_t));
     if(!nuevo) return false;
 
     nuevo->clave = strdup(clave);
-    if (!nuevo->clave) {
-        free(nuevo);
-        return false;
-    }
+    if (!nuevo->clave) { free(nuevo); return false; }
 
     nuevo->valor = valor;
     nuevo->siguiente = hash->buckets[valor_hashing] ;
@@ -94,5 +94,97 @@ bool hash_insertar(hash_t *hash, char *clave, void *valor, void **encontrado){
     if(encontrado) *encontrado = NULL;
     return true;
 
+}
 
+void *hash_buscar(hash_t *hash, char *clave){
+    hash_nodo_t *nodo = hash_buscar_nodo(hash, clave,NULL);
+    if (nodo) {
+        return nodo->valor;
+    } else {
+        return NULL;
+    }
+}
+
+bool hash_contiene(hash_t *hash, char *clave){
+    return hash_buscar_nodo(hash, clave, NULL) != NULL;
+}
+
+static void *hash_remover_nodo(hash_t *hash, size_t posicion_hashing, const char *clave) {
+    hash_nodo_t *actual = hash->buckets[posicion_hashing];
+    hash_nodo_t *anterior = NULL;
+    while (actual) {
+        if (strcmp(actual->clave, clave) == 0) {
+            void *valor = actual->valor;
+            if (anterior)
+                anterior->siguiente = actual->siguiente;
+            else
+                hash->buckets[posicion_hashing] = actual->siguiente;
+            free(actual->clave);
+            free(actual);
+            hash->cantidad--;
+            return valor;
+        }
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+    return NULL;
+}
+
+void *hash_quitar(hash_t *hash, char *clave){
+    if(!hash || !clave) return NULL;
+    size_t posicion_hashing = funcion_hashing(clave, hash->capacidad);
+    return hash_remover_nodo(hash, posicion_hashing, clave);
+}
+
+
+size_t hash_iterar(hash_t *hash, bool (*f)(char *, void *, void *), void *ctx){
+    if(!hash || !f) return 0;
+
+    size_t aplicadas = 0;
+    for(size_t i = 0; i < hash->capacidad ; i++){
+        hash_nodo_t *nodo = hash->buckets[i];
+        while(nodo){
+            if(!f(nodo->clave,  nodo->valor,ctx))
+                return aplicadas;
+            aplicadas++;
+            nodo = nodo->siguiente;
+        }
+    }
+
+    return aplicadas;
+}
+void hash_destruir(hash_t *hash){
+    if(!hash) return;
+    
+    for(size_t i = 0; i < hash->capacidad; i++){
+        hash_nodo_t *actual = hash->buckets[i];
+        while(actual){
+            hash_nodo_t *siguiente = actual->siguiente;
+            free(actual->clave);
+            free(actual);
+            actual = siguiente;
+        }
+    }
+    
+    free(hash->buckets);
+    free(hash);
+}
+
+void hash_destruir_todo(hash_t *hash, void (*destructor)(void *)){
+    if(!hash) return;
+    
+    for(size_t i = 0; i < hash->capacidad; i++){
+        hash_nodo_t *actual = hash->buckets[i];
+        while(actual){
+            hash_nodo_t *siguiente = actual->siguiente;
+            if(destructor && actual->valor)
+                destructor(actual->valor);
+            free(actual->clave);
+            free(actual);
+            actual = siguiente;
+        }
+    }
+    
+    free(hash->buckets);
+    free(hash);
 }
