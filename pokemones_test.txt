@@ -1,0 +1,8 @@
+1,Pikachu,ELEC,55,40,90
+25,Raichu,ELEC,90,55,110
+4,Charmander,FUEG,52,43,65
+6,Charizard,FUEG,84,78,100
+7,Squirtle,AGUA,48,65,43
+9,Blastoise,AGUA,83,100,78
+1,Bulbasaur,PLAN,49,49,45
+3,Venusaur,PLAN,82,83,80

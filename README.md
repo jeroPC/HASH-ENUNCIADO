@@ -58,3 +58,58 @@ vector_original = vector;
 
 ## Respuestas a las preguntas teóricas
 Incluír acá las respuestas a las preguntas del enunciado (si aplica).
+
+
+La función de hashing que estás usando es la djb2 (también conocida como Dan Bernstein's hash), una de las funciones hash más populares y eficientes para strings.
+
+Origen:
+Fue creada por Daniel J. Bernstein (djb) y publicada en un newsgroup de Unix (comp.lang.c) alrededor de 1991. Es famosa por su simplicidad y excelente distribución
+
+Explicación:
+hash = 5381: Número inicial (número primo, da mejor distribución)
+hash << 5: Desplaza 5 bits a la izquierda (equivale a multiplicar por 32)
+(hash << 5) + hash: Es lo mismo que hash * 33 (32 + 1)
++ (size_t)c: Suma el valor ASCII del carácter
+hash % capacidad: Reduce el valor al rango de la tabla
+¿Por qué 33?
+El número 33 fue elegido empíricamente por Bernstein. Produce pocas colisiones y tiene buena distribución estadística para strings comunes (nombres, palabras, URLs, etc.).
+
+
+
+⚠️ Lo que NO pudimos implementar con hash:
+Búsqueda por ID - Sin hash
+
+void buscar_por_id(tp1_t *tp, int id)
+{
+    struct pokemon *p = tp1_buscar_id(tp, id);  // O(n) - búsqueda lineal
+    // ...
+}
+
+¿Por qué NO usamos hash para búsqueda por ID?
+Razón 1: La clave del hash es el NOMBRE, no el ID
+
+// Insertamos con NOMBRE como clave:
+hash_insertar(hash, p->nombre, p, NULL);
+       //           ^^^^^^^^^ clave = nombre
+
+       
+Análisis de la implementación del main.c según el enunciado
+ Lo que SÍ usamos del enunciado:
+1. Línea de comandos con nombre de archivo
+ Implementado correctamente: Recibe el nombre del archivo por línea de comandos.
+
+2. Primitivas de TP1
+ Usamos las primitivas del TP1 para cargar y manipular los pokemones.
+
+3. Tabla de Hash con primitivas
+ Usamos la tabla de hash implementada con todas sus primitivas.
+
+4. Búsqueda por nombre usando hash
+ Implementado con hash: Complejidad O(1) promedio.
+
+ Lo que NO pudimos implementar con hash:
+Búsqueda por ID - Sin hash
+¿Por qué NO usamos hash para búsqueda por ID?
+Razón 1: La clave del hash es el NOMBRE, no el ID
+
+El hash está estructurado con nombre como clave. No podemos buscar por ID porque el ID no es la clave.
