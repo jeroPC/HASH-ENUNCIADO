@@ -45,7 +45,7 @@ Utilizamos la función **djb2** (Daniel J. Bernstein, 1991), una de las más efi
 ### Primitivas y Complejidad:
 
 #### 1. 'hash_crear()'
-**Complejidad: O(1) promedio, O(n) peor caso**
+**Complejidad:  O(n)  porque calloc inicializa todo el array **
 
 - Reserva memoria para el array de punteros
 - Inicializa todas las posiciones en NULL (aqui se da el O(N))
