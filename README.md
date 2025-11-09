@@ -161,13 +161,6 @@ La busqueda de pokemones , por nombre, se realiza con una complejidad O(1) , per
 ---
 
 
-
-<div align="center">
-<img width="70%" src="img/diagrama2.svg">
-</div>
-
----
-
 ## Respuestas a las preguntas teóricas
 
 ### 1. ¿Qué es un diccionario?
