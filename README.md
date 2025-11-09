@@ -205,11 +205,11 @@ El nivel más bajo (nivel 1) contiene todos los elementos.
 Cada nivel superior contiene algunos elementos (saltos), permitiendo "saltar" más rápido por la lista.
 
 
-
+```
 Level 3:  ----A-------------F---------
 Level 2:  ----A----C--------F---------
 Level 1:  A--B--C--D--E--F--G----------
-
+```
 
 Para buscar un elemento, empezás en el nivel más alto y avanzás hasta que el siguiente elemento es mayor al que buscás.
 Bajás un nivel y seguís buscando.
