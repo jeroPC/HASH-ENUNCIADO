@@ -86,8 +86,8 @@ Donde:
 #### 4. 'hash_contiene()'
 **Complejidad: O(1) promedio, O(k+m) peor caso**
 
-- Internamente usa `hash_buscar`
-- Devuelve `true` si encuentra la clave
+- Internamente usa hash_buscar
+- Devuelve true si encuentra la clave
 
 
 ---
