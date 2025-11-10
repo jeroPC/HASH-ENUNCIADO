@@ -221,11 +221,10 @@ Así, vas "saltando" grandes bloques y luego refinando la búsqueda en niveles m
 
 Una **función de hash** transforma una clave (de tamaño arbitrario) en un índice numérico (tamaño fijo) dentro del rango de la tabla.
 
-```text
-funcion_hash("Pikachu", capacidad=10) → 7
-funcion_hash("Charizard", capacidad=10) → 2
-funcion_hash("Bulbasaur", capacidad=10) → 5
-```
+
+   funcion_hash("Pikachu", capacidad=10) → 7
+   funcion_hash("Charizard", capacidad=10) → 2
+   funcion_hash("Bulbasaur", capacidad=10) → 5
 
 **Características deseables:**
 
@@ -292,9 +291,8 @@ Busca B → empieza en 5 (VACÍO) → para → NO encuentra B ✗
 
 ##### Sondeo cuadrático (Quadratic Probing)
 
-```text
-indice + 1², indice + 2², indice + 3², ...
-```
+
+   indice + 1², indice + 2², indice + 3², ...
 
 - Evita agrupamiento del sondeo lineal
 - Salta más posiciones
@@ -302,9 +300,8 @@ indice + 1², indice + 2², indice + 3², ...
 
 ##### Doble hash (Double Hashing)
 
-```text
-indice = (hash1(clave) + i * hash2(clave)) % capacidad
-```
+
+   indice = (hash1(clave) + i * hash2(clave)) % capacidad
 
 - Usa dos funciones hash diferentes
 - Mejor distribución
