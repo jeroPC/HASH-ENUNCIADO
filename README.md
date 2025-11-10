@@ -104,11 +104,7 @@ m: La cantidad de elementos en la lista del bucket . Si muchas claves colisionan
 4. Libera la clave 
 5. Devuelve el valor 
 
-
-<div align="center">
-<img width="70%" src="img/ELIMINACION.svg">
-</div>
-
+![Eliminación en Hash](img/ELIMINACION.svg)
 
 ---
 
@@ -141,18 +137,13 @@ m: La cantidad de elementos en la lista del bucket . Si muchas claves colisionan
 
 
 ---
+---
 
-
-
-<div align="center">
-<img width="70%" src="img/tablaa.png">
-</div>
-
-
+![Tabla de complejidades](img/tablaa.png)
 
 ---
 
-*** En cuanto al main ***
+### En cuanto al main
 
 En mi implementación, el programa recibe por línea de comandos el nombre de un archivo de pokemones y utiliza las primitivas del TP1 para cargar los datos en una tabla de hash. La tabla de hash se construye usando el nombre del pokemon como clave, ya que las primitivas y la estructura del TDA hash están diseñadas para trabajar con claves tipo string.
 
@@ -190,9 +181,7 @@ Diccionario de edades:
 
 **Array ordenado + Búsqueda binaria**
 
-<div align="center">
-<img width="70%" src="img/ARRAY.svg">
-
+![Array ordenado](img/ARRAY.svg)
 
 ---
 
@@ -220,9 +209,7 @@ Así, vas "saltando" grandes bloques y luego refinando la búsqueda en niveles m
 
 #### **Tabla de Hash** (nuestra implementación)
 
-<div align="center">
-<img width="70%" src="img/HASH.svg">
-</div>
+![Tabla Hash](img/HASH.svg)
 
 **Ventaja:** Operaciones más rápidas O(1)  
 **Desventaja:** No mantiene orden, usa más memoria
@@ -304,9 +291,7 @@ Si marcara VACÍO:
 Busca B → empieza en 5 (VACÍO) → para → NO encuentra B ✗
 ```
 
-<div align="center">
-<img width="70%" src="img/CERRADO.svg">
-</div>
+![Hash Cerrado](img/CERRADO.svg)
 
 ##### Sondeo cuadrático (Quadratic Probing)
 
@@ -355,15 +340,11 @@ En una tabla abierta se pueden guardar infinitos elementos en cada posición usa
 
 **Ejemplo 1: Tabla pequeña (mal tamaño)**
 
-<div align="center">
-<img width="70%" src="img/POCOEFI.png">
-</div>
+![Tabla con poca eficiencia](img/POCOEFI.png)
 
 **Ejemplo 2: Tabla grande (buen tamaño)**
 
-<div align="center">
-<img width="70%" src="img/BUENADIST.svg">
-</div>
+![Tabla con buena distribución](img/BUENADIST.svg)
 
 **Conclusión:**  
 Si el tamaño es pequeño, las listas crecen y la eficiencia baja a O(n).  
