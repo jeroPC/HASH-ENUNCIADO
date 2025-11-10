@@ -259,10 +259,9 @@ funcion_hash("Bulbasaur", capacidad=10) → 5
 Una **tabla de hash** es un array donde cada posición se calcula mediante una función de hash.  
 Una **colisión** ocurre cuando dos claves diferentes producen el mismo índice:
 
-```text
-hash("Pikachu") = 5
-hash("Raichu") = 5  ← Colisión!
-```
+
+   hash("Pikachu") = 5
+   hash("Raichu") = 5  ← Colisión!
 
 #### Métodos de resolución:
 
@@ -280,16 +279,14 @@ Cada posición tiene una **lista enlazada**
 - **Ventaja:** Mejor caché, menos memoria, array contiguo
 - **Desventaja:** Agrupamiento, necesita marca "BORRADO", puede llenarse
 
-**Problema del BORRADO:**
+Problema del BORRADO:
 
-```text
 Inserta A en 5, B colisiona → 6
 Elimina A → marca 5 como BORRADO (no VACÍO)
 Busca B → empieza en 5 (BORRADO) → continúa → encuentra B en 6 ✓
 
 Si marcara VACÍO:
 Busca B → empieza en 5 (VACÍO) → para → NO encuentra B ✗
-```
 
 ![Hash Cerrado](img/CERRADO.svg)
 
