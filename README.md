@@ -234,88 +234,83 @@ Así, vas "saltando" grandes bloques y luego refinando la búsqueda en niveles m
 
 Una **función de hash** transforma una clave (de tamaño arbitrario) en un índice numérico (tamaño fijo) dentro del rango de la tabla.
 
-```
+```text
 funcion_hash("Pikachu", capacidad=10) → 7
 funcion_hash("Charizard", capacidad=10) → 2
 funcion_hash("Bulbasaur", capacidad=10) → 5
-
-
-
+```
 
 **Características deseables:**
 
-1. **Determinística:** 
-   - Misma entrada → misma salida siempre
-   - `hash("Pikachu")` siempre da el mismo resultado
+1. **Determinística:**  
+   Misma entrada → misma salida siempre  
+   `hash("Pikachu")` siempre da el mismo resultado
 
-2. **Distribución uniforme:** 
-   - Minimizar colisiones
-   - Distribuir claves uniformemente en la tabla
+2. **Distribución uniforme:**  
+   Minimizar colisiones  
+   Distribuir claves uniformemente en la tabla
 
-3. **Eficiencia:** 
-   - Cálculo rápido O(k), k = longitud de clave
-   - No debe ser más lento que las operaciones del hash
+3. **Eficiencia:**  
+   Cálculo rápido O(k), k = longitud de clave  
+   No debe ser más lento que las operaciones del hash
 
-4. **Efecto avalancha:** 
-   - Pequeños cambios → grandes diferencias en el hash
-   - `hash("Pikachu") ≠ hash("Pikacho")`
+4. **Efecto avalancha:**  
+   Pequeños cambios → grandes diferencias en el hash  
+   `hash("Pikachu") ≠ hash("Pikacho")`
 
 **Para nuestro problema (strings como claves):**
 - Debe procesar cada carácter
 - Aprovechar todos los bits del resultado
 - Minimizar patrones en strings comunes
 
+**DJB2 cumple todas estas características**, por eso la elegí.
 
-**DJB2 cumple todas estas características**, por eso la elegí
 ---
 
 ### 4. Tabla de Hash y métodos de resolución de colisiones
 
-Una **tabla de hash** es un array donde cada posición se calcula mediante una función de hash. Una **colisión** ocurre cuando dos claves diferentes producen el mismo índice:
+Una **tabla de hash** es un array donde cada posición se calcula mediante una función de hash.  
+Una **colisión** ocurre cuando dos claves diferentes producen el mismo índice:
 
+```text
 hash("Pikachu") = 5
 hash("Raichu") = 5  ← Colisión!
-
+```
 
 #### Métodos de resolución:
 
-#####  **Encadenamiento ** 
+##### Encadenamiento
 
-**Hash Abierto = Direccionamiento Cerrado**
+**Hash Abierto = Direccionamiento Cerrado**  
 Cada posición tiene una **lista enlazada**
 - Múltiples elementos en la misma posición
 - **Ventaja:** Simple, no hay "tabla llena", eliminación fácil
 - **Desventaja:** Allocations extra, peor caché
 
+##### Hash Cerrado = Direccionamiento Abierto
 
-
-**Hash Cerrado = Direccionamiento Abierto**
 - Busca la siguiente posición libre: `(indice + 1) % capacidad`
 - **Ventaja:** Mejor caché, menos memoria, array contiguo
-- **Desventaja:** 
-  - Agrupamiento 
-  - Necesita marca "BORRADO" para no romper búsquedas
-  - Puede llenarse
+- **Desventaja:** Agrupamiento, necesita marca "BORRADO", puede llenarse
 
-  **Problema del BORRADO:**
+**Problema del BORRADO:**
 
+```text
 Inserta A en 5, B colisiona → 6
 Elimina A → marca 5 como BORRADO (no VACÍO)
 Busca B → empieza en 5 (BORRADO) → continúa → encuentra B en 6 ✓
 
 Si marcara VACÍO:
 Busca B → empieza en 5 (VACÍO) → para → NO encuentra B ✗
-
+```
 
 <div align="center">
 <img width="70%" src="img/CERRADO.svg">
 </div>
 
+##### Sondeo cuadrático (Quadratic Probing)
 
-
-##### c **Sondeo cuadrático (Quadratic Probing)**
-
-```
+```text
 indice + 1², indice + 2², indice + 3², ...
 ```
 
@@ -323,11 +318,9 @@ indice + 1², indice + 2², indice + 3², ...
 - Salta más posiciones
 - Más complejo de implementar
 
+##### Doble hash (Double Hashing)
 
-
-##### d **Doble hash (Double Hashing)**
-
-```
+```text
 indice = (hash1(clave) + i * hash2(clave)) % capacidad
 ```
 
@@ -337,39 +330,41 @@ indice = (hash1(clave) + i * hash2(clave)) % capacidad
 
 ---
 
-¿Por qué es importante el tamaño de la tabla de hash?
+### ¿Por qué es importante el tamaño de la tabla de hash?
 
-El tamaño de la tabla es fundamental para el rendimiento de cualquier implementación de hash, tanto en tablas abiertas como en tablas cerradas .
+El tamaño de la tabla es fundamental para el rendimiento de cualquier implementación de hash, tanto en tablas abiertas como en tablas cerradas.
 
-Tablas cerradas :
-Cada posición almacena un solo elemento.
-Si la tabla es muy pequeña, habrá muchas colisiones y las listas de sondeo serán largas.
-Esto degrada la complejidad de las operaciones de O(1) promedio a O(n) en el peor caso.
-Si la tabla es muy grande, se desperdicia memoria.
+#### Tablas cerradas
 
+- Cada posición almacena un solo elemento.
+- Si la tabla es muy pequeña, habrá muchas colisiones y las listas de sondeo serán largas.
+- Esto degrada la complejidad de las operaciones de O(1) promedio a O(n) en el peor caso.
+- Si la tabla es muy grande, se desperdicia memoria.
 
-Tablas abiertas :
-Cada posición puede almacenar una lista de elementos.
-Aunque siempre se puede insertar (no hay "tabla llena"), si la tabla es muy pequeña, las listas se hacen largas y la búsqueda se vuelve lenta.
-El tamaño adecuado mantiene las listas cortas y las operaciones en O(1) promedio.
+#### Tablas abiertas
+
+- Cada posición puede almacenar una lista de elementos.
+- Aunque siempre se puede insertar (no hay "tabla llena"), si la tabla es muy pequeña, las listas se hacen largas y la búsqueda se vuelve lenta.
+- El tamaño adecuado mantiene las listas cortas y las operaciones en O(1) promedio.
 
 ---
 
-¿Realmente importa el tamaño en una tabla abierta?
-En una tabla abierta  se pueden guardar infinitos elementos en cada posición usando listas, si la tabla es muy pequeña, las listas se hacen largas y la eficiencia se pierde.
+### ¿Realmente importa el tamaño en una tabla abierta?
 
-Ejemplo 1: Tabla pequeña (mal tamaño)
+En una tabla abierta se pueden guardar infinitos elementos en cada posición usando listas, pero si la tabla es muy pequeña, las listas se hacen largas y la eficiencia se pierde.
+
+**Ejemplo 1: Tabla pequeña (mal tamaño)**
 
 <div align="center">
 <img width="70%" src="img/POCOEFI.png">
 </div>
 
+**Ejemplo 2: Tabla grande (buen tamaño)**
 
-Ejemplo 2: Tabla grande (buen tamaño)
 <div align="center">
 <img width="70%" src="img/BUENADIST.svg">
 </div>
 
-
-Si el tamaño es pequeño, las listas crecen y la eficiencia baja a O(n).
+**Conclusión:**  
+Si el tamaño es pequeño, las listas crecen y la eficiencia baja a O(n).  
 Un tamaño adecuado mantiene las listas cortas y las operaciones en O(1) promedio.
