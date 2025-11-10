@@ -170,7 +170,9 @@ Un **diccionario** (o mapa/tabla asociativa) es una estructura de datos que alma
 
 Diccionario de edades:
 "Juan"    → 11
+
 "María"   → 23
+
 "Pedro"   → 100
 
 
